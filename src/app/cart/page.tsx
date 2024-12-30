@@ -18,6 +18,12 @@ export default function CartPage() {
     setIsLoading(false);
   }, []);
 
+  const updateCartAndNotify = (updatedCart: CartItem[]) => {
+    setCartItems(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    window.dispatchEvent(new Event('cartUpdated'));
+  };
+
   const updateQuantity = (productId: number, newQuantity: number) => {
     if (newQuantity < 1) {
       removeItem(productId);
@@ -27,19 +33,18 @@ export default function CartPage() {
     const updatedCart = cartItems.map(item =>
       item.id === productId ? { ...item, quantity: newQuantity } : item
     );
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    updateCartAndNotify(updatedCart);
   };
 
   const removeItem = (productId: number) => {
     const updatedCart = cartItems.filter(item => item.id !== productId);
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    updateCartAndNotify(updatedCart);
   };
 
   const clearCart = () => {
     setCartItems([]);
     localStorage.removeItem('cart');
+    window.dispatchEvent(new Event('cartUpdated'));
   };
 
   if (isLoading) {

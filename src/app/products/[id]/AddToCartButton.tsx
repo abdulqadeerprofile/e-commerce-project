@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { Product, CartItem } from '@/types/types';
 
-export default function AddToCartButton({ product }: { product: Product }) {
+export default function AddToCartButton({ product }: { product: Product }): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
 
-  const addToCart = () => {
+  const addToCart = (): void => {
     setIsLoading(true);
     try {
       const savedCart = localStorage.getItem('cart');
@@ -27,12 +27,11 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
       localStorage.setItem('cart', JSON.stringify(updatedCart));
       
-      // Dispatch custom event to update cart count
       window.dispatchEvent(new Event('cartUpdated'));
       
       alert('Product added to cart!');
     } catch (error) {
-      alert('Failed to add product to cart');
+      console.error('Failed to add product to cart', error);
     } finally {
       setIsLoading(false);
     }
